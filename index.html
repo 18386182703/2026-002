@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白无常设计 | AI Motion Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-dark-secondary: #111111;
+            --text-white: #ffffff;
+            --text-gray: #888888;
+            --accent-color: #ffffff;
+            --border-color: #222222;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Space Mono', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.65rem;
+            color: var(--text-gray);
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 120px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            display: block;
+            letter-spacing: 2px;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        .hero-visual {
+            position: relative;
+            margin-top: 60px;
+            border-radius: 30px;
+            overflow: hidden;
+            background: var(--bg-dark-secondary);
+            min-height: 500px;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero-visual-main {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .floating-images {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .floating-img {
+            position: absolute;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s ease;
+        }
+
+        .floating-img:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .floating-img-1 {
+            top: -40px;
+            left: 80px;
+            width: 240px;
+            height: 300px;
+        }
+
+        .floating-img-2 {
+            bottom: 60px;
+            right: 60px;
+            width: 400px;
+            height: 220px;
+        }
+
+        .floating-img-3 {
+            top: 200px;
+            left: -30px;
+            width: 300px;
+            height: 240px;
+        }
+
+        .floating-img-4 {
+            bottom: -50px;
+            right: 30%;
+            width: 280px;
+            height: 280px;
+        }
+
+        .floating-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-tag {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-tag-label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            display: block;
+        }
+
+        .hero-tag-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        /* Marquee */
+        .marquee {
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: marquee 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee-item {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+            margin: 0 60px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Brands Section */
+        .brands {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 40px;
+            align-items: center;
+        }
+
+        .brand-item {
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .brand-item:hover {
+            opacity: 1;
+        }
+
+        /* Works Section */
+        .works {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .works-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .works-title-en {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .works-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .work-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .work-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .work-card-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .work-card:hover .work-card-image {
+            transform: scale(1.05);
+        }
+
+        .work-card-content {
+            padding: 30px;
+        }
+
+        .work-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .work-card-desc {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .work-card-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .work-card:hover .work-card-play {
+            opacity: 1;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .services-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+        }
+
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .service-item {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-white);
+        }
+
+        .service-item:first-child {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .service-item:hover {
+            padding-left: 30px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .service-item-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+            margin-right: 30px;
+        }
+
+        .service-item-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+        }
+
+        .service-item-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+        }
+
+        /* About Section */
+        .about {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .about-text {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .about-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .about-image {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .about-image:hover {
+            transform: scale(1.05);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Media Manager Section */
+        .media-manager {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .media-manager-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .media-manager-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .media-manager-subtitle {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+
+        .upload-container {
+            background: var(--bg-dark-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-container.dragover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .upload-btn {
+            background: var(--text-white);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 40px;
+        }
+
+        .file-item {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .file-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .file-preview img,
+        .file-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        .file-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .progress-bar {
+            width: 150px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .file-remove {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-remove:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        .file-success {
+            color: #51cf66;
+            font-size: 0.85rem;
+        }
+
+        .file-error {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+        }
+
+        .contact-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .contact-item {
+            margin-bottom: 30px;
+        }
+
+        .contact-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .contact-value {
+            font-size: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-white);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .wechat-qr {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wechat-qr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-gray);
+        }
+
+        .footer-icp {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .footer-icp:hover {
+            color: var(--text-white);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img,
+        .modal-content video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 15px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .floating-images {
+                display: none;
+            }
+
+            .hero-tag {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                margin-top: 30px;
+                display: inline-block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            nav.scrolled {
+                padding: 12px 20px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .hero {
+                padding: 100px 20px 40px;
+            }
+
+            .hero-visual {
+                min-height: 300px;
+            }
+
+            .brands,
+            .works,
+            .services,
+            .about,
+            .media-manager,
+            .contact {
+                padding: 60px 20px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-item-title {
+                font-size: 1.3rem;
+            }
+
+            .service-item-price {
+                font-size: 0.85rem;
+            }
+
+            .about-images {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-status {
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div>
+            <div class="logo">Ai × Lab</div>
+            <div class="logo-subtitle">AI 类美计算 · 你负责想象</div>
+        </div>
+        <div class="nav-right">
+            <button class="menu-btn">白无常 ↗ PSC</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-label">AI + Space Mono</span>
+            <h1 class="hero-title">为品牌创造面向未来的 情绪视听内容</h1>
+            <div class="hero-visual">
+                <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1400&h=800&fit=crop" alt="AI Motion" class="hero-visual-main">
+                <div class="floating-images">
+                    <div class="floating-img floating-img-1">
+                        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=400&h=500&fit=crop" alt="">
+                    </div>
+                    <div class="floating-img floating-img-2">
+                        <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=600&h=350&fit=crop" alt="">
+                    </div>
+                    <div class="floating-img floating-img-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="floating-img floating-img-4">
+                        <img src="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?w=450&h=450&fit=crop" alt="">
+                    </div>
+                </div>
+                <div class="hero-tag">
+                    <span class="hero-tag-label">从三维到AIGC</span>
+                    <span class="hero-tag-value">21%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <section class="marquee">
+        <div class="marquee-content">
+            <span class="marquee-item">✦ 站酷首批超级AI设计师</span>
+            <span class="marquee-item">✦ 站酷千万人气设计师</span>
+            <span class="marquee-item">✦ 华为AI企业内训</span>
+            <span class="marquee-item">✦ 站酷推荐设计师</span>
+            <span class="marquee-item">✦ Behance推荐</span>
+            <span class="marquee-item">✦ 培训一线AI+C4D设计师超1万名</span>
+            <span class="marquee-item">✦ 站酷首批超级AI设计师</span>
+            <span class="marquee-item">✦ 站酷千万人气设计师</span>
+            <span class="marquee-item">✦ 华为AI企业内训</span>
+            <span class="marquee-item">✦ 站酷推荐设计师</span>
+            <span class="marquee-item">✦ Behance推荐</span>
+            <span class="marquee-item">✦ 培训一线AI+C4D设计师超1万名</span>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="brands fade-in">
+        <div class="section-label">我们服务过的品牌</div>
+        <div class="brands-grid">
+            <div class="brand-item">华为</div>
+            <div class="brand-item">OPPO</div>
+            <div class="brand-item">阿里巴巴</div>
+            <div class="brand-item">字节跳动</div>
+            <div class="brand-item">抖音</div>
+            <div class="brand-item">美团</div>
+            <div class="brand-item">微星显卡</div>
+            <div class="brand-item">斐乐</div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section class="works fade-in">
+        <div class="works-header">
+            <div>
+                <div class="works-title-en">Works Case Showcase</div>
+                <h2 class="works-title">作品案例展示</h2>
+            </div>
+        </div>
+        <div class="works-grid">
+            <div class="work-card stagger-1" onclick="openModal('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=800&fit=crop', 'image')">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=500&fit=crop" alt="AI漫剧" class="work-card-image">
+                <div class="work-card-play">▶</div>
+                <div class="work-card-content">
+                    <h3 class="work-card-title">AI漫剧</h3>
+                    <p class="work-card-desc">AI驱动的漫画与短剧创作</p>
+                </div>
+            </div>
+            <div class="work-card stagger-2" onclick="openModal('https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&h=800&fit=crop', 'image')">
+                <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&h=500&fit=crop" alt="TVC广告" class="work-card-image">
+                <div class="work-card-play">▶</div>
+                <div class="work-card-content">
+                    <h3 class="work-card-title">TVC广告</h3>
+                    <p class="work-card-desc">高品质商业广告视频制作</p>
+                </div>
+            </div>
+            <div class="work-card stagger-3" onclick="openModal('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop', 'image')">
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop" alt="三维产品视频" class="work-card-image">
+                <div class="work-card-play">▶</div>
+                <div class="work-card-content">
+                    <h3 class="work-card-title">三维产品视频</h3>
+                    <p class="work-card-desc">沉浸式产品展示与视觉营销</p>
+                </div>
+            </div>
+            <div class="work-card stagger-4" onclick="openModal('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=800&fit=crop', 'image')">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=500&fit=crop" alt="企业AI Agent工作流定制" class="work-card-image">
+                <div class="work-card-play">▶</div>
+                <div class="work-card-content">
+                    <h3 class="work-card-title">企业AI Agent工作流定制</h3>
+                    <p class="work-card-desc">智能化企业工作流解决方案</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services fade-in">
+        <h2 class="services-title">Motion-ready production menu</h2>
+        <div class="services-list">
+            <a href="#" class="service-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="service-item-number">01</span>
+                    <span class="service-item-title">三维 IP 形象全套设计</span>
+                </div>
+                <span class="service-item-price">20000 元 / 套</span>
+            </a>
+            <a href="#" class="service-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="service-item-number">02</span>
+                    <span class="service-item-title">三维 CG 动态影片</span>
+                </div>
+                <span class="service-item-price">1600 元 / 秒起</span>
+            </a>
+            <a href="#" class="service-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="service-item-number">03</span>
+                    <span class="service-item-title">AI 创意广告短片</span>
+                </div>
+                <span class="service-item-price">350 元 / 秒起</span>
+            </a>
+            <a href="#" class="service-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="service-item-number">04</span>
+                    <span class="service-item-title">AI 漫画 / AI 短剧</span>
+                </div>
+                <span class="service-item-price">1000 元 / 分钟起</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Media Manager Section -->
+    <section class="media-manager fade-in">
+        <div class="media-manager-header">
+            <h2 class="media-manager-title">媒体资源管理系统</h2>
+            <p class="media-manager-subtitle">支持 JPG、PNG、GIF、MP4、MOV 格式上传</p>
+        </div>
+        <div class="upload-container" id="uploadContainer">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">拖拽文件到此处或点击上传</div>
+            <div class="upload-hint">支持单文件或批量上传，最大单个文件 100MB</div>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">选择文件</button>
+            <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/gif,video/mp4,video/quicktime" style="display: none;">
+        </div>
+        <div class="file-list" id="fileList"></div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about fade-in">
+        <div class="about-grid">
+            <div>
+                <h2 class="about-title">深圳白无常设计有限公司</h2>
+                <p class="about-text">白无常设计，是国内深耕十三年的先锋数字创意机构，深耕三维视觉起家，早已服务华为、腾讯、大疆、美团、OPPO、阿里巴巴、天猫等一众一线科技与互联网头部企业，长期承接高端三维KV、品牌三维广告视频、全案动态视觉等核心项目，用成熟的落地能力，收获行业标杆客户长期认可。</p>
+                <p class="about-text">深耕行业多年，我们跳出传统三维设计的固有框架，率先锚定未来发展方向，聚焦未来情绪视听内容创作，深度布局AI全链路创意能力。覆盖AI视频生成、AI音乐适配、动态视觉研发、Vibe Coding落地、企业专属智能Agent工作流定制等前沿业务，以规模化、智能化的创意体系，替代传统零散化设计服务。</p>
+            </div>
+            <div>
+                <div class="about-images">
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=400&fit=crop" alt="">
+                    </div>
+                    <div class="about-image" onclick="openModal('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=800&fit=crop', 'image')">
+                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact fade-in" id="contact">
+        <div class="contact-grid">
+            <div>
+                <h2 class="contact-title">联系我们</h2>
+                <div class="contact-item">
+                    <div class="contact-label">电话</div>
+                    <div class="contact-value">
+                        <span>18124513861</span>
+                        <button class="copy-btn" onclick="copyToClipboard('18124513861', this)">复制</button>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">邮箱</div>
+                    <div class="contact-value">
+                        <span>1662690088@qq.com</span>
+                        <button class="copy-btn" onclick="copyToClipboard('1662690088@qq.com', this)">复制</button>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">微信</div>
+                    <div class="wechat-qr" onclick="openModal('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&h=500&fit=crop', 'image')">
+                        <span>扫码添加</span>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">2026 · AI Rights Reserved</div>
+            <a href="https://beian.miit.gov.cn" target="_blank" class="footer-icp">粤ICP备16109646号</a>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        // Navigation scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Modal functionality
+        function openModal(src, type) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modalContent');
+            
+            if (type === 'video') {
+                modalContent.innerHTML = `<video src="${src}" controls autoplay></video>`;
+            } else {
+                modalContent.innerHTML = `<img src="${src}" alt="Preview">`;
+            }
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = '';
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Copy to clipboard
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '已复制!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // File Upload functionality
+        const uploadContainer = document.getElementById('uploadContainer');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/quicktime'];
+        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.mp4', '.mov'];
+        const maxFileSize = 100 * 1024 * 1024; // 100MB
+
+        // Drag and drop events
+        uploadContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadContainer.classList.add('dragover');
+        });
+
+        uploadContainer.addEventListener('dragleave', () => {
+            uploadContainer.classList.remove('dragover');
+        });
+
+        uploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadContainer.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        uploadContainer.addEventListener('click', (e) => {
+            if (e.target === uploadContainer || e.target.closest('.upload-container')) {
+                if (e.target.tagName !== 'BUTTON') {
+                    fileInput.click();
+                }
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+            fileInput.value = '';
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const fileItem = createFileItem(file);
+                fileList.appendChild(fileItem);
+                validateAndUpload(file, fileItem);
+            });
+        }
+
+        function createFileItem(file) {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            
+            const preview = document.createElement('div');
+            preview.className = 'file-preview';
+            
+            const info = document.createElement('div');
+            info.className = 'file-info';
+            info.innerHTML = `
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">${formatFileSize(file.size)}</div>
+            `;
+            
+            const status = document.createElement('div');
+            status.className = 'file-status';
+            status.innerHTML = `
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text">0%</div>
+            `;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'file-remove';
+            removeBtn.textContent = '删除';
+            removeBtn.onclick = () => item.remove();
+            
+            item.appendChild(preview);
+            item.appendChild(info);
+            item.appendChild(status);
+            item.appendChild(removeBtn);
+            
+            // Generate preview
+            generatePreview(file, preview);
+            
+            return item;
+        }
+
+        function generatePreview(file, previewContainer) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.muted = true;
+                video.playsInline = true;
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(video);
+                video.addEventListener('loadeddata', () => {
+                    video.currentTime = 1;
+                });
+            } else {
+                previewContainer.innerHTML = '📄';
+            }
+        }
+
+        function validateAndUpload(file, fileItem) {
+            const statusDiv = fileItem.querySelector('.file-status');
+            const progressFill = fileItem.querySelector('.progress-fill');
+            const progressText = fileItem.querySelector('.progress-text');
+            
+            // Check file type
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExt)) {
+                statusDiv.innerHTML = '<span class="file-error">不支持的文件格式</span>';
+                return;
+            }
+            
+            // Check file size
+            if (file.size > maxFileSize) {
+                statusDiv.innerHTML = '<span class="file-error">文件超过100MB限制</span>';
+                return;
+            }
+            
+            // Simulate upload
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    statusDiv.innerHTML = '<span class="file-success">✓ 上传成功</span>';
+                }
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 200);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Trigger scroll animation on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                fadeElements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight) {
+                        el.classList.add('visible');
+                    }
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
